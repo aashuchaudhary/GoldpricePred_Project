@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Price Predictor</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #343a40;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #2c3e50;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        form {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+        }
+
+        form label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+            color: #495057;
+        }
+
+        form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            font-size: 1.4em;
+            color: #28a745;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        #graph {
+            margin-top: 30px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #2c3e50;
+            color: #ffffff;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        footer a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gold Price Predictor</h1>
+    </header>
+    <div class="container">
+        <form action="/predict" method="post">
+            <label for="feature1">Feature 1:</label>
+            <input type="text" name="feature1" required>
+
+            <label for="feature2">Feature 2:</label>
+            <input type="text" name="feature2" required>
+
+            <label for="feature3">Feature 3:</label>
+            <input type="text" name="feature3" required>
+
+            <label for="feature4">Feature 4:</label>
+            <input type="text" name="feature4" required>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+            <div class="result">{{ prediction }}</div>
+        {% endif %}
+
+        <!-- Graph container -->
+        <div id="graph"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Gold Predictor | Built with ❤️ by <a href="#">Your Name</a></p>
+    </footer>
+
+    <script>
+        // Data passed from Flask
+        const months = {{ months | tojson }};
+        const prices = {{ prices | tojson }};
+
+        // Create a graph
+        const trace = {
+            x: months,
+            y: prices,
+            type: 'scatter',
+            mode: 'lines+markers',
+            marker: { color: '#e74c3c', size: 10 },
+            line: { shape: 'spline', color: '#007bff', width: 3 },
+        };
+
+        const layout = {
+            title: {
+                text: 'Gold Prices (Historical and Predicted)',
+                font: { size: 24, color: '#343a40' },
+            },
+            xaxis: { title: 'Months', gridcolor: '#eaeaea', color: '#495057' },
+            yaxis: { title: 'Price (USD)', gridcolor: '#eaeaea', color: '#495057' },
+            plot_bgcolor: '#ffffff',
+            paper_bgcolor: '#f8f9fa',
+        };
+
+        Plotly.newPlot('graph', [trace], layout);
+    </script>
+</body>
+</html>
